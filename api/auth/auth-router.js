@@ -6,20 +6,24 @@ const User = require('../users/users-model')
 
 const { JWT_SECRET } = require('../secrets/index');
 
-const { missing, taken } = require('../middleware/auth-middleware')
+const { missing, taken } = require('../middleware/auth-middleware');
 
-router.post('/register', missing, taken, (req, res, next) => {
+router.post('/register', missing, (req, res, next) => {
   const { username, password } = req.body
   const hash = bcrypt.hashSync(password, 5)
 
-  User.add({ username, password:hash })
-    .then(newUser => {
-      res.status(201).json({
-        id: newUser.id,
-        username: newUser.username,
-        password: newUser.password,
-      })
-    }).catch(next)
+  if(req.body.username === req.user.username){
+    return res.json({status:401, message: 'username taken'})
+  } else {
+      User.add({ username, password:hash })
+      .then(newUser => {
+        res.status(201).json({
+          id: newUser.id,
+          username: newUser.username,
+          password: newUser.password,
+        })
+      }).catch(next)
+  }
   });
   // END OF REGISTER FUNCTION
 
@@ -52,7 +56,7 @@ router.post('/register', missing, taken, (req, res, next) => {
   */
 
 
-router.post('/login', missing, taken, (req, res, next) => {
+router.post('/login', missing, (req, res, next) => {
   if(bcrypt.compareSync(req.body.password, req.user.password)) {
     const token = buildToken(req.user)
     res.json({
