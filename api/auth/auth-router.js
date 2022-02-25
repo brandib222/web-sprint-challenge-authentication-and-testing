@@ -65,7 +65,8 @@ router.post('/login', missing, (req, res, next) => {
       token,
     })
   } else {
-    next({ status: 401, message: 'invalid credentials'})
+    res.json({ status: 401, message: 'invalid credentials'})
+    next()
   }
 });
 //END OF POST FUNCTION
