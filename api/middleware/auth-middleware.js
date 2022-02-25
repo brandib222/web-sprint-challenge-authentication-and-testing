@@ -14,7 +14,7 @@ const Users = require('../users/users-model')
 const missing = (req, res, next) => {
     const { username, password } = req.body
         if(!username || !password) {
-            return res.json({status: 500, message: 'username and password required'})
+            return res.status(401).json({message: 'username and password required'})
         }
         next()
 }
