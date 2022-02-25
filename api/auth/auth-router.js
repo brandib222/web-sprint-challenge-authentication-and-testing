@@ -61,7 +61,7 @@ router.post('/login', missing, taken, (req, res, next) => {
   const { username, password } = req.body
 
    User.findBy({username})
-    .then(([user]) => {
+    .then(user => {
       if (user) {
         const token = generateToken(user);
         res.status(200).json({
@@ -73,7 +73,7 @@ router.post('/login', missing, taken, (req, res, next) => {
       }
     })
 
-    
+
   // if(bcrypt.compareSync(req.body.password, req.user.password)) {
   //   const token = buildToken(req.user)
   //   res.json({
