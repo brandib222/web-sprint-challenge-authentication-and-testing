@@ -8,7 +8,7 @@ const { JWT_SECRET } = require('../secrets/index');
 
 const { missing, taken } = require('../middleware/auth-middleware')
 
-router.post('/register', missing, (req, res, next) => {
+router.post('/register', missing, taken, (req, res, next) => {
   const { username, password } = req.body
   const hash = bcrypt.hashSync(password, 5)
 
@@ -52,7 +52,7 @@ router.post('/register', missing, (req, res, next) => {
   */
 
 
-router.post('/login', taken, (req, res, next) => {
+router.post('/login', missing, taken, (req, res, next) => {
   if(bcrypt.compareSync(req.body.password, req.user.password)) {
     const token = buildToken(req.user)
     res.json({
