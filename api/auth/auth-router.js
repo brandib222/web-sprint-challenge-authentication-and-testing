@@ -63,7 +63,8 @@ router.post('/login', missing, (req, res, next) => {
       status: 200,
       message: `Welcome, ${req.user.username}`,
       token,
-    })
+    }) 
+    next()
   } else {
     res.json({ status: 401, message: 'invalid credentials'})
     next()
