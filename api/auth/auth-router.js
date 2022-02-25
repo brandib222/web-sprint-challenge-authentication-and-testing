@@ -12,7 +12,6 @@ router.post('/register', missing, (req, res, next) => {
   const { username, password } = req.body
   const hash = bcrypt.hashSync(password, 5)
 
-  if(username && password) {
     User.add({ username, password:hash })
     .then(newUser => {
       res.status(200).json({
@@ -21,9 +20,7 @@ router.post('/register', missing, (req, res, next) => {
         password: newUser.password,
       })
     }).catch(next)
-  } else {
-    res.status(401).json({message: 'username taken'})
-  }
+  
   });
   // END OF REGISTER FUNCTION
 
@@ -60,10 +57,10 @@ router.post('/register', missing, (req, res, next) => {
 // (DOES NOT RESPOND WITH STATUS CODE), OR (TOKEN/ WELCOME MESSAGE ON LOGIN)
 // RESPONDS WITH STATUS CODE BUT NOT 'INVALID CREDENTIALS' IF NO (USERNAME) OR (PASSWORD)
 
-router.post('/login', missing, async (req, res, next) => {
+router.post('/login', missing, (req, res, next) => {
   const { username, password } = req.body
 
-  await User.findBy({username})
+   User.findBy({username})
     .then(([user]) => {
       if (user && bcrypt.compareSync(password, user.password)) {
         const token = generateToken(user);
