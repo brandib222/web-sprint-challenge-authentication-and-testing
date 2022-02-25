@@ -58,7 +58,7 @@ router.post('/register', missing, (req, res, next) => {
 
 router.post('/login', missing, (req, res, next) => {
   const { username, password } = req.body
-  if(username === req.user.username && password === req.body.password) {
+  if(username === req.body.username && password === req.body.password) {
     const token = buildToken(req.user)
     res.status(201).json({
       message: `Welcome, ${req.user.username}`,
