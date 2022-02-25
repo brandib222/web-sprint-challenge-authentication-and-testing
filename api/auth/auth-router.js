@@ -8,7 +8,7 @@ const { JWT_SECRET } = require('../secrets/index');
 
 const { missing, taken } = require('../middleware/auth-middleware');
 
-router.post('/register', (req, res, next) => {
+router.post('/register', missing, (req, res, next) => {
   const { username, password } = req.body
   const hash = bcrypt.hashSync(password, 5)
 
@@ -56,7 +56,7 @@ router.post('/register', (req, res, next) => {
 // (DOES NOT RESPOND WITH STATUS CODE), OR (TOKEN/ WELCOME MESSAGE ON LOGIN)
 // RESPONDS WITH STATUS CODE BUT NOT 'INVALID CREDENTIALS' IF NO (USERNAME) OR (PASSWORD)
 
-router.post('/login', (req, res, next) => {
+router.post('/login', missing, (req, res, next) => {
   if(bcrypt.compareSync(req.body.password, req.user.password)) {
     const token = buildToken(req.user)
     res.json({
