@@ -5,7 +5,8 @@ const jokes = require('../jokes/jokes-data');
 const router = require('express').Router();
 const User = require('../users/users-model')
 
-const { JWT_SECRET } = require('../secrets/index')
+const { JWT_SECRET } = require('../secrets/index');
+const { restart } = require('nodemon');
 
 router.post('/register', (req, res, next) => {
   const { username, password } = req.body
@@ -41,7 +42,7 @@ router.post('/register', (req, res, next) => {
         "password": "2a$08$jG.wIGR2S4hxuyWNcBf9MuoC4y0dNy7qC/LbmtuFBSdIhWks2LhpG"
       }
 
-      // PUT THESE IN THE MIDDLEWARE
+      // ********* PUT THESE IN THE MIDDLEWARE *************
 
     3- On FAILED registration due to `username` or `password` missing from the request body,
       the response body should include a string exactly as follows: "username and password required".
@@ -51,8 +52,32 @@ router.post('/register', (req, res, next) => {
   */
 
 
-router.post('/login', (req, res) => {
-  res.end('implement login, please!');
+router.post('/login', (req, res, next) => {
+  if(bcrypt.compareSync(req.body.password, req.user.password)) {
+    const token = buildToken(req.user)
+    res.json({
+      message: `Welcome, ${req.user.username}`,
+      token,
+    })
+  } else {
+    next({ status: 401, message: 'invalid credentials'})
+  }
+});
+//END OF POST FUNCTION
+
+function buildToken(user) {
+  const payload = {
+    subject:user.id,
+    password: user.password,
+    username: user.username,
+  }
+  const options = {
+    expiresIn:'1d'
+  }
+  return jwt.sign(payload, JWT_SECRET, options)
+}
+//END OF BUILD TOKEN FUNCTION
+
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.
@@ -76,6 +101,5 @@ router.post('/login', (req, res) => {
     4- On FAILED login due to `username` not existing in the db, or `password` being incorrect,
       the response body should include a string exactly as follows: "invalid credentials".
   */
-});
 
 module.exports = router;
