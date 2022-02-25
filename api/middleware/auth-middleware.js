@@ -22,7 +22,7 @@ const missing = (req, res, next) => {
 // THIS IS NOT WORKING
 const taken = async (req, res, next) => {
     if(Users.findBy(req.body.username).first() != null){
-        next({ status: 400, message: 'username taken'  })
+        next(res.status(401).json({message: 'username taken'}))
     } else {
         next()
     }
