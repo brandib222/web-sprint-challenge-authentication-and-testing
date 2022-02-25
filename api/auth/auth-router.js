@@ -1,14 +1,14 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken');
-const jokes = require('../jokes/jokes-data');
 
 const router = require('express').Router();
 const User = require('../users/users-model')
 
 const { JWT_SECRET } = require('../secrets/index');
-const { restart } = require('nodemon');
 
-router.post('/register', (req, res, next) => {
+const { missing } = require('../middleware/auth-middleware')
+
+router.post('/register', missing, (req, res, next) => {
   const { username, password } = req.body
   const hash = bcrypt.hashSync(password, 5)
 
