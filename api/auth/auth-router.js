@@ -72,6 +72,8 @@ router.post('/login', missing, taken, (req, res, next) => {
         next({status:401, message: 'invalid credentials'})
       }
     })
+
+    
   // if(bcrypt.compareSync(req.body.password, req.user.password)) {
   //   const token = buildToken(req.user)
   //   res.json({
