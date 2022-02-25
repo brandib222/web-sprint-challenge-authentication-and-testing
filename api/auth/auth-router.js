@@ -52,7 +52,7 @@ router.post('/register', missing, (req, res, next) => {
   */
 
 
-router.post('/login', (req, res, next) => {
+router.post('/login', missing, (req, res, next) => {
   if(bcrypt.compareSync(req.body.password, req.user.password)) {
     const token = buildToken(req.user)
     res.json({
