@@ -7,7 +7,6 @@ const User = require('../users/users-model')
 const { JWT_SECRET } = require('../secrets/index');
 
 const { missing, taken } = require('../middleware/auth-middleware');
-const { OPEN_READWRITE } = require('sqlite3');
 
 router.post('/register', missing, taken, (req, res, next) => {
   const { username, password } = req.body
@@ -52,6 +51,10 @@ router.post('/register', missing, taken, (req, res, next) => {
       the response body should include a string exactly as follows: "username taken".
   */
 
+      // IF IT'S IN PARENTHESIS, IT'S AN INDIVIDUAL TEST THAT'S FAILING
+
+// (DOES NOT RESPOND WITH STATUS CODE), OR (TOKEN/ WELCOME MESSAGE ON LOGIN)
+// RESPONDS WITH STATUS CODE BUT NOT 'INVALID CREDENTIALS' IF NO (USERNAME) OR (PASSWORD)
 
 router.post('/login', missing, taken, (req, res, next) => {
   if(bcrypt.compareSync(req.body.password, req.user.password)) {
@@ -80,6 +83,9 @@ function buildToken(user) {
 }
 //END OF BUILD TOKEN FUNCTION
 
+// DOES NOT GET JOKES WITH VALID TOKEN
+// JOKES GET DOES NOT SAY 'TOKEN REQUIRED' IF MISSING TOKEN
+// JOKES GET DOES NOT SAY 'INVALID TOKEN' IF TOKEN IS WRONG
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.
