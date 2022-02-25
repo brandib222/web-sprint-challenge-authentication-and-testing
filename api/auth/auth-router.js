@@ -12,14 +12,18 @@ router.post('/register', missing, (req, res, next) => {
   const { username, password } = req.body
   const hash = bcrypt.hashSync(password, 5)
 
-  User.add({ username, password:hash })
+  if(username, password) {
+    User.add({ username, password:hash })
     .then(newUser => {
-      res.status(201).json({
+      res.status(200).json({
         id: newUser.id,
         username: newUser.username,
         password: newUser.password,
       })
     }).catch(next)
+  } else {
+    res.status(401).json({message: 'username taken'})
+  }
   });
   // END OF REGISTER FUNCTION
 
