@@ -61,8 +61,8 @@ router.post('/login', missing, taken, (req, res, next) => {
   const { username, password } = req.body
 
    User.findBy({username})
-    .then(user => {
-      if (user) {
+    .then(([user]) => {
+      if (user && bcrypt.compareSync(password, user.password)) {
         const token = generateToken(user);
         res.status(200).json({
           message: `Welcome, ${req.user.username}`,
@@ -72,8 +72,6 @@ router.post('/login', missing, taken, (req, res, next) => {
         next({status:401, message: 'invalid credentials'})
       }
     })
-
-
   // if(bcrypt.compareSync(req.body.password, req.user.password)) {
   //   const token = buildToken(req.user)
   //   res.json({
