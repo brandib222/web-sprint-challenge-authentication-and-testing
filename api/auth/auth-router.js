@@ -6,7 +6,7 @@ const User = require('../users/users-model')
 
 const { JWT_SECRET } = require('../secrets/index');
 
-const { missing, taken } = require('../middleware/auth-middleware');
+const { missing } = require('../middleware/auth-middleware');
 
 router.post('/register', missing, (req, res, next) => {
   const { username, password } = req.body
@@ -56,10 +56,10 @@ router.post('/register', missing, (req, res, next) => {
 // (DOES NOT RESPOND WITH STATUS CODE), OR (TOKEN/ WELCOME MESSAGE ON LOGIN)
 // RESPONDS WITH STATUS CODE BUT NOT 'INVALID CREDENTIALS' IF NO (USERNAME) OR (PASSWORD)
 
-router.post('/login', missing, (req, res, next) => {
+router.post('/login', missing, async (req, res, next) => {
   const { username, password } = req.body
 
-  User.findBy({username})
+  await User.findBy({username})
     .then(([user]) => {
       if (user && bcrypt.compareSync(password, user.password)) {
         const token = generateToken(user);
