@@ -58,30 +58,50 @@ router.post('/register', missing, (req, res, next) => {
 
 router.post('/login', missing, (req, res, next) => {
   const { username, password } = req.body
-  if(username  && password ) {
-    const token = buildToken(req.user)
-    res.status(201).json({
-      message: `Welcome, ${req.user.username}`,
-      token,
-    }) 
-  } else {
-    res.status(401).json({ message: 'invalid credentials'})
-    next()
-  }
+
+  User.findBy({username})
+    .then(([user]) => {
+      if (user && bcrypt.compareSync(password, user.password)) {
+        const token = generateToken(user);
+        res.status(200).json({
+          message: `Welcome, ${req.user.username}`,
+          token
+        })
+      } else {
+        next({status:401, message: 'invalid credentials'})
+      }
+    })
+  // if(bcrypt.compareSync(req.body.password, req.user.password)) {
+  //   const token = buildToken(req.user)
+  //   res.json({
+  //     message: `Welcome, ${req.user.username}`,
+  //     token,
+  //   }) 
+  // } else {
+  //   next({status: 401, message: 'invalid credentials'})
+  // }
 });
 //END OF POST FUNCTION
 
-function buildToken(user) {
+function generateToken(user) {
   const payload = {
-    subject:user.id,
-    password: user.password,
+    subject: user.id,
     username: user.username,
+    password: user.password,
   }
-  const options = {
-    expiresIn:'1d'
-  }
-  return jwt.sign(payload, JWT_SECRET, options)
+  return jwt.sign(payload, JWT_SECRET, {expiresIn: '1d'})
 }
+// function buildToken(user) {
+//   const payload = {
+//     subject:user.id,
+//     password: user.password,
+//     username: user.username,
+//   }
+//   const options = {
+//     expiresIn:'1d'
+//   }
+//   return jwt.sign(payload, JWT_SECRET, options)
+// }
 //END OF BUILD TOKEN FUNCTION
 
 // DOES NOT GET JOKES WITH VALID TOKEN
