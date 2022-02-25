@@ -1,3 +1,5 @@
+const Users = require('../users/users-model')
+
 
 // ********* PUT THESE IN THE MIDDLEWARE *************
 
@@ -15,6 +17,15 @@ const missing = (req, res, next) => {
         next()
 }
 
+const taken = async (req, res, next) => {
+    const existing = Users.getAll()
+    if(req.body.username === existing.username) {
+        return res.json({status:401, message: 'username taken'})
+    }
+    next()
+}
+
 module.exports = {
-    missing
+    missing,
+    taken,
 }
