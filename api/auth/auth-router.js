@@ -57,7 +57,7 @@ router.post('/register', missing, (req, res, next) => {
 // RESPONDS WITH STATUS CODE BUT NOT 'INVALID CREDENTIALS' IF NO (USERNAME) OR (PASSWORD)
 
 router.post('/login', missing, (req, res, next) => {
-  if(bcrypt.compareSync(req.body.password, req.user.password)) {
+  if((bcrypt.compareSync(req.body.password, req.user.password)) && (bcrypt.compareSync(req.body.username, req.user.username)) ) {
     const token = buildToken(req.user)
     res.status(201).json({
       message: `Welcome, ${req.user.username}`,
