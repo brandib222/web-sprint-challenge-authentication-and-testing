@@ -59,14 +59,12 @@ router.post('/register', missing, (req, res, next) => {
 router.post('/login', missing, (req, res, next) => {
   if(bcrypt.compareSync(req.body.password, req.user.password)) {
     const token = buildToken(req.user)
-    res.json({
-      status: 200,
+    res.status(201).json({
       message: `Welcome, ${req.user.username}`,
       token,
     }) 
-    next()
   } else {
-    res.json({ status: 401, message: 'invalid credentials'})
+    res.status(401).json({ message: 'invalid credentials'})
     next()
   }
 });
